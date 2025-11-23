@@ -10,6 +10,7 @@ const MongoURI = 'mongodb://localhost:27017/roomora';
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(express.urlencoded({ extended: true }));
 
 async function main() {
     await mongoose.connect(MongoURI);
@@ -34,3 +35,9 @@ app.get('/listings', async (req, res) => {
   res.render('listings/index.ejs',{allListings});
 });
 
+
+app.get('/listings/:id', async (req, res) => {
+  let {id} = req.params;
+  const listing =  await Listing.findById(id);
+  res.render('listings/show.ejs',{listing});
+});
