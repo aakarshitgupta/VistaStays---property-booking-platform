@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const ejs = require('ejs');
+const Listing = require('./models/listing');
+const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -22,4 +24,9 @@ app.listen(port, () => {
 
 app.get('/', (req, res) => {
   res.send('Home Page');
+});
+
+app.get('/listings', async (req, res) => {
+  const allListings = await Listing.find({});
+  res.render('index.ejs',allListings);
 });
