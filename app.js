@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const ejs = require('ejs');
 const Listing = require('./models/listing');
 const path = require('path');
+const methodOverride = require('method-override');
 
 const app = express();
 const port = 3000;
@@ -11,6 +12,7 @@ const MongoURI = 'mongodb://localhost:27017/roomora';
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 
 async function main() {
     await mongoose.connect(MongoURI);
@@ -54,3 +56,18 @@ app.get('/listings/:id', async (req, res) => {
   const listing =  await Listing.findById(id);
   res.render('listings/show.ejs',{listing});
 });
+
+// Edit route 
+app.get('/listings/:id/edit', async (req, res) => {
+  let {id} = req.params;
+  const listing =  await Listing.findById(id);
+  res.render('listings/edit.ejs',{listing});
+});
+
+// Update route
+app.put('/listings/:id', async (req, res) => {
+  let {id} = req.params;
+  await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+  res.redirect(`/listings/${id}`);
+});
+
