@@ -4,15 +4,18 @@ const ejs = require('ejs');
 const Listing = require('./models/listing');
 const path = require('path');
 const methodOverride = require('method-override');
+const ejsMate = require('ejs-mate');
 
 const app = express();
 const port = 3000;
 const MongoURI = 'mongodb://localhost:27017/roomora';
 
+app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 async function main() {
     await mongoose.connect(MongoURI);
